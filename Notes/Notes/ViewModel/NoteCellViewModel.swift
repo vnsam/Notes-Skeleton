@@ -9,8 +9,20 @@
 import Foundation
 
 struct NoteCellViewModel {
-    let note: Note
+    private let note: Note
     let displayMode: NoteDisplayMode
+    
+    init(note: Note, displayMode: NoteDisplayMode) {
+        self.note = note
+        self.displayMode = displayMode
+    }
+    
+    /*
+     ...A better implementation would be instead of not passing the whole model object to viewModel.
+     We must only pass the fields required for displaying in the UI.
+     
+     That dependes on the requirement.
+     */
 }
 
 extension NoteCellViewModel {
@@ -27,6 +39,14 @@ extension NoteCellViewModel {
          */
         
         return "icon-image-path"
+    }
+    
+    var voiceNoteUrl: URL {
+        /*
+         ... implementation for voice note url here.
+         */
+        
+        return URL(string: "voice-note-file-URL")!
     }
     
     // MARK: - Formatting

@@ -52,24 +52,35 @@ class NotesViewController: UITableViewController {
             fatalError("Unable to get cell for the given identifier.")
         }
         
-        let cellViewModel = viewModel.cellViewModel(at: indexPath)
-            
-        cell.set(viewModel: cellViewModel)
-        
         return cell
     }
     
-    private func cellFor(noteType: NoteType, tableView: UITableView, cellForRowAt indexPath: IndexPath) -> CustomCell? {
-        let cell: CustomCell?
+    /*
+     ...cellViewModel will have the displayMode information.
+     Based on this setting - we'll toggle the detailContentView in all types of cell.
+     To avoid layout issues, we'll use stack view.
+     
+     Data-flow: current view controller's view model will hold the `displayMode` -> this is passed along to cellViewModel.
+     
+     On the cell the cell will decide to paint the detail view based on the displayMode sent.
+     */
+    private func cellFor(noteType: NoteType, tableView: UITableView, cellForRowAt indexPath: IndexPath) -> NoteBaseCell? {
+        let cellViewModel = viewModel.cellViewModel(at: indexPath)
+        
         switch noteType {
         case .text:
-            cell = tableView.dequeueReusableCell(withIdentifier: Cell.text.identifier, for: indexPath) as? TextNoteCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Cell.text.identifier, for: indexPath) as? TextNoteCell
+            cell?.set(viewModel: cellViewModel)
+            return cell
         case .voice:
-            cell = tableView.dequeueReusableCell(withIdentifier: Cell.voice.identifier, for: indexPath) as? VoiceNoteCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Cell.voice.identifier, for: indexPath) as? VoiceNoteCell
+            cell?.set(viewModel: cellViewModel)
+            return cell
         case .multimedia:
-            cell = tableView.dequeueReusableCell(withIdentifier: Cell.multimedia.identifier, for: indexPath) as? ImageTextCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: Cell.multimedia.identifier, for: indexPath) as? ImageTextCell
+            cell?.set(viewModel: cellViewModel)
+            return cell
         }
-        return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
